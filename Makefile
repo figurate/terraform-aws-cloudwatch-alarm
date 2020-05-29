@@ -10,10 +10,13 @@ clean:
 	rm -rf .terraform/
 
 test:
-	$(TERRAFORM) init && $(TERRAFORM) validate
+	$(TERRAFORM) init && $(TERRAFORM) validate && \
+		$(TERRAFORM) init modules/ecs_cluster && $(TERRAFORM) validate modules/ecs_cluster
 
 docs:
-	docker run --rm -v "${PWD}:/work" tmknom/terraform-docs markdown ./ >./README.md
+	docker run --rm -v "${PWD}:/work" tmknom/terraform-docs markdown ./ >./README.md && \
+		docker run --rm -v "${PWD}:/work" tmknom/terraform-docs markdown ./modules/ecs_cluster >./modules/ecs_cluster/README.md
 
 format:
-	$(TERRAFORM) fmt -list=true ./
+	$(TERRAFORM) fmt -list=true ./ && \
+		$(TERRAFORM) fmt -list=true ./modules/ecs_cluster

@@ -3,12 +3,12 @@ module "ecs_alarm" {
 
   alarm_name = var.alarm_name
   alarm_type = var.alarm_type
-  namespace = "AWS/ECS"
+  namespace  = "AWS/ECS"
   dimensions = {
     ClusterName = var.cluster_name
   }
   evaluation_periods = var.evaluation_periods
-  threshold = var.threshold
-  alarm_actions = var.alarm_actions
-  ok_actions = var.ok_actions
+  threshold          = var.threshold
+  alarm_actions      = var.alarm_actions
+  ok_actions         = var.ok_actions
 }
