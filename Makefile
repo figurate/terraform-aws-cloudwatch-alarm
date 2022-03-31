@@ -1,25 +1,33 @@
 SHELL:=/bin/bash
 include .env
 
-.PHONY: all clean validate test docs format
+VERSION=$(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
 
-all: validate test docs format
+.PHONY: all clean validate test diagram docs format release
+
+all: test docs format
 
 clean:
 	rm -rf .terraform/
 
 validate:
-	$(TERRAFORM) init && $(TERRAFORM) validate && \
-		$(TERRAFORM) -chdir=modules/ecs_cluster init && $(TERRAFORM) -chdir=modules/ecs_cluster validate
+	$(TERRAFORM) init -upgrade && $(TERRAFORM) validate && \
+		$(TERRAFORM) -chdir=modules/ecs_cluster init -upgrade && $(TERRAFORM) -chdir=modules/ecs_cluster validate
 
 test: validate
-	$(CHECKOV) -d /work && \
-		$(CHECKOV) -d /work/modules/ecs_cluster
+	$(CHECKOV) -d /work
+	$(TFSEC) /work
 
-docs:
+diagram:
+	$(DIAGRAMS) diagram.py
+
+docs: diagram
 	$(TERRAFORM_DOCS) markdown ./ >./README.md && \
 		$(TERRAFORM_DOCS) markdown ./modules/ecs_cluster >./modules/ecs_cluster/README.md
 
 format:
 	$(TERRAFORM) fmt -list=true ./ && \
 		$(TERRAFORM) fmt -list=true ./modules/ecs_cluster
+
+release: test
+	git tag $(VERSION) && git push --tags
