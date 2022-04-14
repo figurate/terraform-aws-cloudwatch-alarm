@@ -1,6 +1,9 @@
 /**
  * # ![AWS](aws-logo.png) CloudWatch Alarm
  *
+ * [![CI](https://github.com/figurate/terraform-aws-cloudwatch-alarm/actions/workflows/main.yml/badge.svg)](https://github.com/figurate/terraform-aws-cloudwatch-alarm/actions/workflows/main.yml)
+ *
+ *
  * Purpose: Templates for CloudWatch Alarms.
  */
 resource "aws_cloudwatch_metric_alarm" "metric_alarm" {
